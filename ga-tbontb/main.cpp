@@ -1,13 +1,38 @@
 #include <iostream>
+#include <algorithm>
+#include <iterator>
+#include <list>
 
 typedef struct Parameters
 {
     unsigned int PopulationSize;
     float MutationRate;
     float CrossoverRate;
+    unsigned int MemberLength;
 };
 
+// couldnt keep things simple
+// wanted to have levels and timestamps
+namespace log
+{
+    void info(const string& message)
+    {
+        std::clog << message;
+    }
+    
+    void trace(const string& message)
+    {
+        std::clog << message;
+    }
+}
 
+string GenerateRandomMember(unsigned int length)
+{
+    auto member = string(length);
+    auto lambda = [](){ return 'a';};
+    std::generator(member, length, lambda);
+    return member;
+}
 
 int main(int argc, char** argv)
 {
@@ -24,12 +49,13 @@ int main(int argc, char** argv)
     //    allocation
     std::list<string> population;
     
-    for( auto x = 0; x < parameters.PopulationSize; x++ )
-    {
-        auto member = "";
-        list.emplace(member);
-    }
+    log::info("initializing population");
     
+    // i was going to use a for-loop
+    // but why when i have the stl
+    auto* iterator = back_inserter(population);
+    std::generate(iterator, parameters.PopulationSize, [=](){GenerateRandomMember(parameters.MemberLength);});
+     
     do
     {
         
