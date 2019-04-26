@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <iterator>
 #include <list>
+#include <vector>
 #include <string>
 #include <random>
 #include <chrono>
@@ -24,12 +25,17 @@ namespace tbontb
 	{
 		void info(const string& message)
 		{
-			clog << message;
+			clog << message << endl;
 		}
 
 		void trace(const string& message)
 		{
-			clog << message;
+			clog << message << endl;
+		}
+
+		void debug(const string& message)
+		{
+			clog << message << endl;
 		}
 	}
 
@@ -58,9 +64,11 @@ namespace tbontb
 		return member;
 	}
 
+	string test() { return "";}
+
 	void go()
 	{
-		auto parameters = Parameters {100,.5,.5};
+		auto parameters = Parameters {100,.5,.5, 18};
 
 		// this was initially a char[][]
 		// then a string[] once inswitched
@@ -78,13 +86,25 @@ namespace tbontb
 		// i was going to use a for-loop
 		// but why when i have the stl
 		//auto* iterator = back_inserter(population);
-		/*
-		   std::generate_n(
-		//iterator, 
-		back_inserter(population),
-		parameters.PopulationSize, 
-		[=](){GenerateRandomMember(parameters.MemberLength);});
-		*/
+		auto lambda = [=]()
+		{
+			// turns out you need to actually "return" something
+			// if you get an error about not finding a '=' for void
+			// or a C2679 error...check that your lambda actually returns
+			//  when it is supposed to.
+			return GenerateRandomMember(parameters.MemberLength);
+		};
+		
+		log::trace("about to generate population");
+		std::generate_n(
+			back_inserter(population),
+			parameters.PopulationSize, 
+			lambda);
+
+		for( auto x : population )
+		{
+			log::debug(x);
+		}
 
 
 		do
@@ -98,8 +118,8 @@ namespace tbontb
 
 int main(int argc, char** argv)
 {
-	//tbontb::go();
-	auto x = tbontb::GenerateRandomMember(18);
-	std::cout << x;
-	auto goal = std::string("TO BE OR NOT TO BE");
+	tbontb::go();
+	//auto x = tbontb::GenerateRandomMember(18);
+	//std::cout << x;
+	//auto goal = std::string("TO BE OR NOT TO BE");
 }
