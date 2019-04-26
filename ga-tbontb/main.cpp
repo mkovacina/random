@@ -6,6 +6,7 @@
 #include <string>
 #include <random>
 #include <chrono>
+#include <numeric>
 
 namespace tbontb
 {
@@ -25,17 +26,22 @@ namespace tbontb
 	{
 		void info(const string& message)
 		{
-			clog << message << endl;
+			cout << message << endl;
 		}
 
 		void trace(const string& message)
 		{
-			clog << message << endl;
+			cout << message << endl;
 		}
 
 		void debug(const string& message)
 		{
-			clog << message << endl;
+			cout << message << endl;
+		}
+
+		void debug(unsigned int message)
+		{
+			cout << message << endl;
 		}
 	}
 
@@ -54,7 +60,8 @@ namespace tbontb
 		std::default_random_engine generator(seed);
 		std::uniform_int_distribution<int> distribution(0,VALID_CHARS.size() - 1);
 
-		auto member = string(length,' ');
+		auto member = string();
+		//member.reserve(18);
 		auto lambda = [&]()
 		{
 			return VALID_CHARS[distribution(generator)];
@@ -101,17 +108,32 @@ namespace tbontb
 			parameters.PopulationSize, 
 			lambda);
 
+		auto target = string("TO BE OR NOT TO BE");
+		auto compare = [](unsigned char c1, unsigned char c2) { return c1 == c2; };
+
 		for( auto x : population )
 		{
+			// so using transform and a vector of ints isn't "the best"
+			// but i am exploring the stl and more functional programming
+			// also i should switch to a bit vector
+			// but turns out that bitset deoesn't have iterators...
+			list<int> scores;
 			log::debug(x);
+			log::debug(target);
+			transform(x.begin(), x.end(), target.begin(),
+					back_inserter(scores), compare);
+			auto score = accumulate(scores.begin(), scores.end(), 0);
+			std::copy(scores.begin(), scores.end(), std::ostream_iterator<int>(std::cout));
+			log::debug("");
+			log::debug(score);
 		}
 
 
-		do
-		{
-
-		}
-		while(true);
+		//jdo
+		//{
+		//	transform
+		//}
+		//while(true);
 	}
 }
 
