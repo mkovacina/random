@@ -111,7 +111,10 @@ namespace tbontb
 		auto target = string("TO BE OR NOT TO BE");
 		auto compare = [](unsigned char c1, unsigned char c2) { return c1 == c2; };
 
-		for( auto x : population )
+		auto maxScore = 0u;
+		string* best;
+
+		for( auto& x : population )
 		{
 			// so using transform and a vector of ints isn't "the best"
 			// but i am exploring the stl and more functional programming
@@ -126,8 +129,16 @@ namespace tbontb
 			std::copy(scores.begin(), scores.end(), std::ostream_iterator<int>(std::cout));
 			log::debug("");
 			log::debug(score);
+			if (score > maxScore)
+			{
+				maxScore = score;
+				best = &x;
+			}
 		}
 
+		log::info("----");
+		log::debug(maxScore);
+		log::info(*best);
 
 		//jdo
 		//{
