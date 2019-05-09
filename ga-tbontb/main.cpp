@@ -73,6 +73,8 @@ namespace tbontb
 
 	string test() { return "";}
 
+	void mutate
+
 	void go()
 	{
 		auto parameters = Parameters {100,.5,.5, 18};
@@ -101,50 +103,63 @@ namespace tbontb
 			//  when it is supposed to.
 			return GenerateRandomMember(parameters.MemberLength);
 		};
-		
+
 		log::trace("about to generate population");
 		std::generate_n(
-			back_inserter(population),
-			parameters.PopulationSize, 
-			lambda);
+				back_inserter(population),
+				parameters.PopulationSize, 
+				lambda);
 
 		auto target = string("TO BE OR NOT TO BE");
 		auto compare = [](unsigned char c1, unsigned char c2) { return c1 == c2; };
 
-		auto maxScore = 0u;
-		string* best;
-
-		for( auto& x : population )
+		// 1. initialze the population
+		// 2. evaluate the population
+		// 3. generate a new population
+		//
+		for(auto generation = 0; generation < 1000; generation++)
 		{
-			// so using transform and a vector of ints isn't "the best"
-			// but i am exploring the stl and more functional programming
-			// also i should switch to a bit vector
-			// but turns out that bitset deoesn't have iterators...
-			list<int> scores;
-			log::debug(x);
-			log::debug(target);
-			transform(x.begin(), x.end(), target.begin(),
-					back_inserter(scores), compare);
-			auto score = accumulate(scores.begin(), scores.end(), 0);
-			std::copy(scores.begin(), scores.end(), std::ostream_iterator<int>(std::cout));
-			log::debug("");
-			log::debug(score);
-			if (score > maxScore)
+			auto maxScore = 0u;
+			string* best;
+
+			for( auto& x : population )
 			{
-				maxScore = score;
-				best = &x;
+				// so using transform and a vector of ints isn't "the best"
+				// but i am exploring the stl and more functional programming
+				// also i should switch to a bit vector
+				// but turns out that bitset deoesn't have iterators...
+				list<int> scores;
+				log::debug(x);
+				log::debug(target);
+				transform(x.begin(), x.end(), target.begin(),
+						back_inserter(scores), compare);
+				auto score = accumulate(scores.begin(), scores.end(), 0);
+				std::copy(scores.begin(), scores.end(), std::ostream_iterator<int>(std::cout));
+				log::debug("");
+				log::debug(score);
+				if (score > maxScore)
+				{
+					maxScore = score;
+					best = &x;
+				}
 			}
+
+			log::info("----");
+			log::debug(maxScore);
+			log::info(*best);
+
+			string bestCopy = *best;
+
+			std::list<string> newPopulation;
+			std::generate_n(
+				back_inserter(newPopulation),
+				parameters.PopulationSize, 
+				lambda);			//jdo
+			//{
+			//	transform
+			//}
+			//while(true);
 		}
-
-		log::info("----");
-		log::debug(maxScore);
-		log::info(*best);
-
-		//jdo
-		//{
-		//	transform
-		//}
-		//while(true);
 	}
 }
 
