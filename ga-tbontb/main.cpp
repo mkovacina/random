@@ -73,12 +73,23 @@ namespace tbontb
 
 	string test() { return "";}
 
-	void mutate
+	//void mutate
 
-	void go()
+	std::list<string> initialize(unsigned int populationSize, unsigned int memberLength)
 	{
-		auto parameters = Parameters {100,.5,.5, 18};
+		// i was going to use a for-loop
+		// but why when i have the stl
+		//auto* iterator = back_inserter(population);
+		auto lambda = [=]()
+		{
+			// turns out you need to actually "return" something
+			// if you get an error about not finding a '=' for void
+			// or a C2679 error...check that your lambda actually returns
+			//  when it is supposed to.
+			return GenerateRandomMember(memberLength);
+		};
 
+		log::trace("about to generate population");
 		// this was initially a char[][]
 		// then a string[] once inswitched
 		//     to c++ becuase i amm not a complete savage
@@ -89,77 +100,74 @@ namespace tbontb
 		//    something constant without continued 
 		//    allocation
 		std::list<string> population;
-
-		log::info("initializing population");
-
-		// i was going to use a for-loop
-		// but why when i have the stl
-		//auto* iterator = back_inserter(population);
-		auto lambda = [=]()
-		{
-			// turns out you need to actually "return" something
-			// if you get an error about not finding a '=' for void
-			// or a C2679 error...check that your lambda actually returns
-			//  when it is supposed to.
-			return GenerateRandomMember(parameters.MemberLength);
-		};
-
-		log::trace("about to generate population");
 		std::generate_n(
 				back_inserter(population),
-				parameters.PopulationSize, 
+				populationSize, 
 				lambda);
 
+		return population;
+	}
+
+	void evaluate(std::list<string> population)
+	{
 		auto target = string("TO BE OR NOT TO BE");
 		auto compare = [](unsigned char c1, unsigned char c2) { return c1 == c2; };
+		auto maxScore = 0u;
+		string* best;
+
+		for( auto& x : population )
+		{
+			// so using transform and a vector of ints isn't "the best"
+			// but i am exploring the stl and more functional programming
+			// also i should switch to a bit vector
+			// but turns out that bitset deoesn't have iterators...
+			list<int> scores;
+			log::debug(x);
+			log::debug(target);
+			transform(x.begin(), x.end(), target.begin(),
+					back_inserter(scores), compare);
+			auto score = accumulate(scores.begin(), scores.end(), 0);
+			std::copy(scores.begin(), scores.end(), std::ostream_iterator<int>(std::cout));
+			log::debug("");
+			log::debug(score);
+			if (score > maxScore)
+			{
+				maxScore = score;
+				best = &x;
+			}
+		}
+
+		log::info("----");
+		log::debug(maxScore);
+		log::info(*best);
+	}
+
+	void go()
+	{
+		auto parameters = Parameters {100,.5,.5, 18};
 
 		// 1. initialze the population
 		// 2. evaluate the population
 		// 3. generate a new population
 		//
+		auto population = initialize(parameters.PopulationSize, parameters.MemberLength);
 		for(auto generation = 0; generation < 1000; generation++)
 		{
-			auto maxScore = 0u;
-			string* best;
-
-			for( auto& x : population )
-			{
-				// so using transform and a vector of ints isn't "the best"
-				// but i am exploring the stl and more functional programming
-				// also i should switch to a bit vector
-				// but turns out that bitset deoesn't have iterators...
-				list<int> scores;
-				log::debug(x);
-				log::debug(target);
-				transform(x.begin(), x.end(), target.begin(),
-						back_inserter(scores), compare);
-				auto score = accumulate(scores.begin(), scores.end(), 0);
-				std::copy(scores.begin(), scores.end(), std::ostream_iterator<int>(std::cout));
-				log::debug("");
-				log::debug(score);
-				if (score > maxScore)
-				{
-					maxScore = score;
-					best = &x;
-				}
-			}
-
-			log::info("----");
-			log::debug(maxScore);
-			log::info(*best);
-
-			string bestCopy = *best;
-
-			std::list<string> newPopulation;
-			std::generate_n(
-				back_inserter(newPopulation),
-				parameters.PopulationSize, 
-				lambda);			//jdo
-			//{
-			//	transform
-			//}
-			//while(true);
+			/*auto best = */ evaluate(population);
+			//population = update(best.solution);
 		}
+
+
+
+		/*
+		   string bestCopy = *best;
+
+		   std::list<string> newPopulation;
+		   std::generate_n(
+		   back_inserter(newPopulation),
+		   parameters.PopulationSize, 
+		   lambda);			//jdo
+		   */
 	}
 }
 
