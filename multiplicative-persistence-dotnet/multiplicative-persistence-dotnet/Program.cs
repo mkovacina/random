@@ -2,6 +2,9 @@
 using BenchmarkDotNet.Running;
 using System.Linq;
 
+
+//	http://oeis.org/A031346
+
 namespace multiplicative_persistence_dotnet
 {
 	internal class Program
@@ -19,13 +22,18 @@ namespace multiplicative_persistence_dotnet
 
 	public class MultiplicativePersistenceStrategies
 	{
-		private string Input = "666";
+		public string Input = "666";
+		public long Output = 0;
 
 		[Benchmark]
 		public void Naive()
 		{
 			do
 			{
+				if (Input.Trim().Length <= 1) break;
+
+				Output++;
+
 				char[] digits = Input.ToCharArray();
 				int acc = 1;
 				foreach (char digit in digits)
@@ -39,7 +47,7 @@ namespace multiplicative_persistence_dotnet
 
 			} while (true);
 		}
-
+			
 		[Benchmark]
 		public void Better()
 		{
@@ -48,6 +56,10 @@ namespace multiplicative_persistence_dotnet
 			do
 			{
 				long acc = 1L;
+
+				if (x < 10) break;
+
+				Output++;
 
 				do
 				{
