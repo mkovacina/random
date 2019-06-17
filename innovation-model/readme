@@ -1,0 +1,12 @@
+I recently stumbled upon a paper entitled "Dynamics on expanding spaces: modeling the emergence of novelties﻿" which explores existing models of novelty or innovation and then proposes an extension of that model that better fits what is observed in the world according to Heaps' Law﻿, the rate of novelties occurring, and Zipf's Law﻿, relating to the frequency distribution of the idea space.  
+
+Aside from the word "emergence," I decided to read this paper because the idea of generating new ideas from existing ones has always been interesting.  For example, take a set a recipes as a baseline, and then create something new.  You can see where certain components come from, either from the region of the recipe, the method in which the ingredients are manipulated, or just in the overall style.  But to generate (or discover) something new requires an innovative leap (or sometimes blind luck).  The paper speaks of the problem of "unanticipated knowledge," which is when you observe something that is not impossible, but whose existence what not even contemplated.  This directly moves into the idea of the "adjacent possible﻿," which is the set of "things" (e.g., ideas, structures) that are one step away from the set of known "things".  Thus the possible versus the existing, and as you start pushing into the possible, those ideas come into existence and a new realm of possible is unlocked.
+
+Anyways, I wanted to do a PDQ based on the proposed model, which is an extension of Polya and Hoppe urn models﻿.  The procedure involved picking balls from an urn, as outlined here
+
+# Initialize the urn U with N0 distinct balls
+# randomly select a ball x from U with a uniform probability
+# Add x to S, where they consider S to be a "series of inventions"
+# place x back into U along with p copies of x
+# if x is not in S, then v+1 new balls are added to U
+# goto 2 until you are tired
