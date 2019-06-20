@@ -12,8 +12,6 @@ namespace innovation_model
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
 			var model = new InnovationModel(
 					100000,
 					10,
@@ -78,9 +76,9 @@ namespace innovation_model
 
 			for(long iteration = 0; iteration < NumberOfIterations; iteration++)
 			{
-				Console.WriteLine($"# Iteration: {iteration}");
+				Trace($"# Iteration: {iteration}");
 				var selectionIndex = rng.Next(0, UrnCount);	
-				Console.WriteLine($"# Selection Index: {selectionIndex}");
+				Trace($"# Selection Index: {selectionIndex}");
 				var selection = Urn[selectionIndex];
 				Console.Out.WriteLine($"# Selected: {selection}");
 				History[selection]++;
@@ -94,7 +92,7 @@ namespace innovation_model
 
 				if (History[selection] == 1)
 				{
-					Console.WriteLine("# Innovating...");
+					Trace("# Innovating...");
 					for(int x = 0; x < NumberOfNewElements; x++)
 					{
 						Urn[UrnCount] = IdeaGenerator;
@@ -103,12 +101,12 @@ namespace innovation_model
 					}
 				}
 				
-				Console.WriteLine($"# UrnCount: {UrnCount}");
-				Console.WriteLine($"# IdeaGenerator: {IdeaGenerator}");
-				Console.WriteLine($"{iteration},{selectionIndex},{selection},{UrnCount},{IdeaGenerator}");
+				Trace($"# UrnCount: {UrnCount}");
+				Trace($"# IdeaGenerator: {IdeaGenerator}");
+				Log($"{iteration},{selectionIndex},{selection},{UrnCount},{IdeaGenerator}");
 				
 
-				Console.WriteLine();
+				Trace("");
 			}
 		}
 
@@ -120,6 +118,16 @@ namespace innovation_model
 				IdeaGenerator++;
 				UrnCount++;
 			}
+		}
+
+		private void Log(string message)
+		{
+			Console.WriteLine(message);
+		}
+
+		private void Trace(string message)
+		{
+			Console.WriteLine(message);
 		}
 	}
 }
