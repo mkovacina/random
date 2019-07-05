@@ -36,7 +36,7 @@ time in seconds for ByString: 55.866
 time in seconds for ByVector: 56.9356
 ```
 
-So, not leaving well enough alone, I cranked up the size of the file I was dealing with and let the program run.  This time, I did find a noticable differences in performance.
+So, not leaving well enough alone, I cranked up the size of the file I was dealing with and let the program run.  This time, I did find a noticable difference in performance.
 
 ```
 time in seconds for ByString: 1166.52
